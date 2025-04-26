@@ -11,6 +11,7 @@ import {
   ImageBackground,
 } from "react-native"
 import { Ionicons } from "@expo/vector-icons"
+import { Link, router } from "expo-router";
 
 // Main App Component
 export default function TravelApp() {
@@ -117,7 +118,7 @@ const SectionHeader = ({ title }) => {
   return (
     <View style={styles.sectionHeader}>
       <Text style={styles.sectionTitle}>{title}</Text>
-      <TouchableOpacity>
+      <TouchableOpacity onPress={() => router.push("/recommendation/alam")}>
         <Text style={styles.viewAllText}>View All</Text>
       </TouchableOpacity>
     </View>
