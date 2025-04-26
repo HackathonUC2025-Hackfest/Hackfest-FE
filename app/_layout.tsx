@@ -24,6 +24,8 @@ const RootLayout = () => {
       <Stack.Screen name="smarthistory" options={{headerShown: false}}/>
       <Stack.Screen name="recommendation/alam" options={{headerShown: false}}/>
       <Stack.Screen name="Detail" options={{ title: "Detail",headerShown: false }} />
+      <Stack.Screen name="booking" options={{ headerShown: false }} />
+      <Stack.Screen name="booking-confirm" options={{ headerShown: false }} />
     </Stack>
   )
 }

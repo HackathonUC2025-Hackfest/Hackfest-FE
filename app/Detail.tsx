@@ -85,6 +85,16 @@ export default function DetailScreen() {
   // Get overview text based on id
   const overviewText = overviewTexts[id as string] || details
 
+  const handleBooking = () => {
+    router.push({
+      pathname: "/booking",
+      params: {
+        name: name || "Borobudur Tour 2 Hours",
+        price: "100000", // Default price, could be dynamic
+      },
+    })
+  }
+
   return (
     <SafeAreaView style={styles.container} edges={["top"]}>
       <ScrollView showsVerticalScrollIndicator={false}>
@@ -133,7 +143,7 @@ export default function DetailScreen() {
 
               {/* Book Button - Only for tours */}
               {showBookButton && (
-                <TouchableOpacity style={styles.bookButton}>
+                <TouchableOpacity style={styles.bookButton} onPress={handleBooking}>
                   <Text style={styles.bookButtonText}>Book Ticket</Text>
                 </TouchableOpacity>
               )}
