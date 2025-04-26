@@ -12,9 +12,8 @@ import {
   type ImageSourcePropType,
 } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
-import { useNavigation } from "@react-navigation/native"
+import { useRouter } from "expo-router"
 import { Ionicons } from "@expo/vector-icons"
-import type { NativeStackNavigationProp } from "@react-navigation/native-stack"
 
 // Import local images
 // Note: These paths should match your actual project structure
@@ -25,31 +24,7 @@ const images = {
   borobudur: require("../../assets/Borobudur.png"),
 }
 
-// Define the navigation types
-type RootStackParamList = {
-  Home: undefined
-  Detail: {
-    id: string
-    name: string
-    description: string
-    hours: string
-    address: string
-    image: ImageSourcePropType
-    category: string
-    details: string
-    rating: number
-    reviews: number
-    location: {
-      latitude: number
-      longitude: number
-    }
-  }
-}
-
-// Define the navigation prop type
-type NavigationProp = NativeStackNavigationProp<RootStackParamList, "Home">
-
-// Define the item type to match our navigation params
+// Define the item type
 type ItemType = {
   id: string
   name: string
@@ -129,15 +104,19 @@ const localTours: ItemType[] = [
 ]
 
 export default function LocalConnect() {
-  // Use the typed navigation
-  const navigation = useNavigation<NavigationProp>()
+  // Use the router from expo-router instead of navigation
+  const router = useRouter()
   const [selectedLocation, setSelectedLocation] = useState("Yogyakarta")
   const [showLocationDropdown, setShowLocationDropdown] = useState(false)
 
   const locations = ["Yogyakarta", "Bali", "Jakarta", "Bandung", "Surabaya"]
 
   const navigateToDetail = (item: ItemType) => {
-    navigation.navigate("Detail", item)
+    // Use router.push instead of navigation.navigate
+    router.push({
+      pathname: "/Detail",
+      params: { ...item, image: undefined, location: JSON.stringify(item.location) },
+    })
   }
 
   const renderListingItem = (item: ItemType) => (
