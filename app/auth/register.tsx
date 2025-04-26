@@ -1,124 +1,163 @@
-import React from "react";
-import {
-  Text,
-  Image,
-  TextInput,
-  TouchableOpacity,
-  View,
-  SafeAreaView,
-  Touchable,
-  StyleSheet,
-  Alert,
-} from "react-native";
-import AntDesign from "@expo/vector-icons/AntDesign";
-import { router } from "expo-router";
-import { useState } from "react";
-import { registerUser } from "../../services/api";
+import { useState } from "react"
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, Alert, SafeAreaView } from "react-native"
+import { router } from "expo-router"
+import { registerUser } from "../../services/api"
+import { validateEmail, validatePassword } from "../../utils/validation"
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import { Link } from "expo-router"
 
 const Register = () => {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [name, setName] = useState("")
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+  const [confirmPassword, setConfirmPassword] = useState("")
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
-    const HandleSignin = () => {
-        router.push("/auth/login")
+  const [emailError, setEmailError] = useState("")
+  const [passwordError, setPasswordError] = useState("")
+  const [confirmPasswordError, setConfirmPasswordError] = useState("")
+
+  const validateForm = (): boolean => {
+    let isValid = true
+
+    // Validate name
+    if (!name) {
+      Alert.alert("Please enter your name.")
+      isValid = false
     }
 
-    const handleRegister = async () => { 
-      if(!name || !email || !password || !confirmPassword) {
-        return Alert.alert("Please fill in all fields.")
-      }
-      try { 
-        setIsSubmitting(true)
-        const data = await registerUser(name, email, password, confirmPassword) 
-        Alert.alert("Registration Successful", "You can login.")
-        router.push("/auth/login")
-      }catch (error) {  
-        Alert.alert("Registration Failed", error.message || "Please try again.")
-      }
-      finally {
-        setIsSubmitting(false)
-      }
+    // Validate email
+    if (!validateEmail(email)) {
+      setEmailError("Please enter a valid email address.")
+      isValid = false
+    } else {
+      setEmailError("")
     }
+
+    // Validate password
+    const passwordValidation = validatePassword(password)
+    if (!passwordValidation.valid) {
+      setPasswordError(passwordValidation.message || "Password is required.")
+      isValid = false
+    } else {
+      setPasswordError("")
+    }
+
+    // Validate confirmPassword
+    if (password !== confirmPassword) {
+      setConfirmPasswordError("Passwords do not match.")
+      isValid = false
+    } else {
+      setConfirmPasswordError("")
+    }
+
+    return isValid
+  }
+
+  // Handle registration process
+  const handleRegister = async () => {
+    if (!validateForm()) return
+
+    try {
+      setIsSubmitting(true)
+      const data = await registerUser(name, email, password, confirmPassword)
+
+      // Check if token exists before storing it
+      if (data && data.token) {
+        await AsyncStorage.setItem('authToken', data.token)
+        router.push("/home")
+      } else {
+        throw new Error(data.message)
+      }
+    } catch (error: any) {
+      Alert.alert("Registration Failed", error.message || "Please try again.")
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
+
   return (
-    <View style={styles.container}>
-      <SafeAreaView>
-        <Text style={styles.welcome}>Welcome to Glamify!</Text>
+    <SafeAreaView style={styles.container}>
+      <Text style={styles.welcome}>Welcome to NusaTrip</Text>
 
-        <View style={styles.form}>
-          <Text style={{ fontSize: 12, marginBottom: 5 }}>Your Name</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="input your first name"
-            placeholderTextColor="#999"
-            value={name}
-            onChangeText={setName}
-          />
+      <View style={styles.form}>
+        {/* Name Input */}
+        <Text style={{ fontSize: 12, marginBottom: 5 }}>Your Name</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="input your first name"
+          placeholderTextColor="#999"
+          value={name}
+          onChangeText={setName}
+        />
 
-          <Text style={{ fontSize: 12, marginBottom: 5 }}>Email</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="xxxxxx@gmail.com   "
-            placeholderTextColor="#999"
-            value={email}
-            onChangeText={setEmail}
-          />
+        {/* Email Input */}
+        <Text style={{ fontSize: 12, marginBottom: 5 }}>Email</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="xxxxxx@gmail.com"
+          placeholderTextColor="#999"
+          value={email}
+          onChangeText={setEmail}
+        />
+        {emailError ? <Text style={styles.errorText}>{emailError}</Text> : null}
 
-          <Text style={{ fontSize: 12, marginBottom: 5 }}>Password</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Input your password"
-            placeholderTextColor="#999"
-            secureTextEntry
-            value={password}
-            onChangeText={setPassword}
-          />
+        {/* Password Input */}
+        <Text style={{ fontSize: 12, marginBottom: 5 }}>Password</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Input your password"
+          placeholderTextColor="#999"
+          secureTextEntry
+          value={password}
+          onChangeText={setPassword}
+        />
+        {passwordError ? <Text style={styles.errorText}>{passwordError}</Text> : null}
 
-          <Text style={{ fontSize: 12, marginBottom: 5 }}> Confirm Password</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Input confirm password"
-            placeholderTextColor="#999"
-            secureTextEntry 
-            value={confirmPassword}
-            onChangeText={setConfirmPassword}
-          />
+        {/* Confirm Password Input */}
+        <Text style={{ fontSize: 12, marginBottom: 5 }}>Confirm Password</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Input confirm password"
+          placeholderTextColor="#999"
+          secureTextEntry
+          value={confirmPassword}
+          onChangeText={setConfirmPassword}
+        />
+        {confirmPasswordError ? <Text style={styles.errorText}>{confirmPasswordError}</Text> : null}
 
-          <TouchableOpacity style={styles.LoginButton}>
-            <Text style={styles.LoginButtonText}>{isSubmitting ? "Registering..." : "Sign up"}</Text>
-          </TouchableOpacity>
+        {/* Register Button */}
+        <TouchableOpacity style={styles.LoginButton} onPress={handleRegister} disabled={isSubmitting}>
+          <Text style={styles.LoginButtonText}>
+            {isSubmitting ? "Registering..." : "Sign up"}
+          </Text>
+        </TouchableOpacity>
 
-            <Text style={styles.or}>or sign up with</Text>
+        {/* Forget Password Link */}
+        <TouchableOpacity style={styles.forgetPasswordContainer}>
+          <Link href="/auth/forgotpassword">
+            <Text style={styles.forgetPassword}>Forget Password?</Text>
+          </Link>
+        </TouchableOpacity>
 
-          <TouchableOpacity style={styles.LoginGoogleButton}>
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "center",
-                alignItems: "center",
-                gap: 10,
-              }}
-            >
-              <AntDesign name="google" size={24} color="color" />
-              <Text style={styles.googlebutton}>Continue with Google</Text>
-            </View>
-          </TouchableOpacity>
-
-          <View style={{ flexDirection: "row", justifyContent: "center" }}>
-            <Text>You don't have an account? </Text>
-            <TouchableOpacity>
-              <Text style={styles.SignUp} onPress={HandleSignin}>Sign in</Text>
-            </TouchableOpacity>
+        {/* Continue with Google Button */}
+        <TouchableOpacity style={styles.LoginGoogleButton}>
+          <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", gap: 10 }}>
+            <Text style={styles.googlebutton}>Continue with Google</Text>
           </View>
-        </View>
-      </SafeAreaView>
-    </View>
-  );
-};
+        </TouchableOpacity>
 
-export default Register;
+        {/* Sign Up Link */}
+        <View style={{ flexDirection: "row", justifyContent: "center" }}>
+          <Text>You don't have an account? </Text>
+          <TouchableOpacity onPress={() => router.push("/auth/login")}>
+            <Text style={styles.SignUp}>Sign in</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    </SafeAreaView>
+  )
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -144,6 +183,11 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 7,
     marginBottom: 20,
+    paddingLeft: 10,
+  },
+  errorText: {
+    color: "red",
+    fontSize: 12,
   },
   LoginButton: {
     backgroundColor: "#8b2331",
@@ -155,11 +199,14 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontWeight: "bold",
   },
-  or: {
-    color: "#ccc",
-    textAlign: "center",
+  forgetPasswordContainer: {
     marginTop: 20,
     marginBottom: 20,
+  },
+  forgetPassword: {
+    color: "#8b2331",
+    textAlign: "center",
+    fontWeight: "bold",
   },
   LoginGoogleButton: {
     padding: 15,
@@ -174,4 +221,6 @@ const styles = StyleSheet.create({
   SignUp: {
     color: "#8b2331",
   },
-});
+})
+
+export default Register

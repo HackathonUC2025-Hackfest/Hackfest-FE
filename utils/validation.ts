@@ -13,13 +13,6 @@ export const validatePassword = (
     };
   }
 
-  if(!/[A-Z]/.test(password)) {
-    return {
-      valid: false,
-      message: "Password must contain at least one uppercase letter.",
-    };
-  }
-
     if(!/\d/.test(password)) {
         return {
         valid: false,

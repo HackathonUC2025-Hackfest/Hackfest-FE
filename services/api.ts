@@ -1,69 +1,81 @@
-const API_BASE_URL = "https://api.example.com";
+const API_BASE_URL = "https://hackathon-uc.iyh.my.id/api/api/";
 
 export const loginUser = async (email: string, password: string) => {
   try {
-    const response = await fetch(`${API_BASE_URL}/login`, {
+    const response = await fetch(`${API_BASE_URL}/auth/login`, {
       method: "POST",
       headers: {
-        "content-Type": "application/json",
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({ email, password }),
     });
 
     const data = await response.json();
+    console.log("API Response Status:", response.status);
+    console.log("API Response Data:", JSON.stringify(data, null, 2));
 
     if (!response.ok) {
+      // Handle error responses
+      console.error("API Error Data:", JSON.stringify(data, null, 2));
       throw new Error(data.message || "Login failed");
     }
-    return data;
-  } catch (error) {
-    throw Error;
-  }
-};
 
-// dapatkan user profile
-export const getUserProfile = async (token: string) => {
-  try {
-    const response = await fetch(`${API_BASE_URL}/profile`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const token = data.payload?.token;
 
-    const data = await response.json();
-
-    if (!response.ok) {
-      throw new Error(data.message || "Failed to get user profile");
+    if (!token) {
+      console.error("Token not found in the response data.");
+      throw new Error("Authentication token not received");
     }
-    return data;
-  } catch (error) {
-    throw Error;
+
+    return { token };
+
+  } catch (error: any) {
+    console.error("Error in loginUser:", error);
+    throw new Error(error.message || "Login failed");
   }
 };
 
-export const registerUser = async (name: string, email: string, password: string, confirmPassword: string ) => { 
+
+export const registerUser = async (name: string, email: string, password: string, confirmPassword: string) => { 
+  // Check if password and confirmPassword match
   if (password !== confirmPassword) {
     throw new Error("Passwords do not match.");
   }
 
-  try{ 
-    const response = await fetch(`${API_BASE_URL}/register`, {
+  try { 
+    const response = await fetch(`${API_BASE_URL}/auth/register`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ name, email, password }),
+      body: JSON.stringify({
+        full_name: name,         // Corrected to `full_name`
+        email,
+        password,
+        confirm_password: confirmPassword, // Corrected to `confirm_password`
+      }),
     });
 
-    const data = await response.json();
+    // Log the raw response for debugging
+    const rawResponse = await response.text(); // Get the response as text first
+    console.log("API Raw Response:", rawResponse); // Log the raw response here
 
     if (!response.ok) {
-      throw new Error(data.message || "Registration failed");
+      // If the response is not OK, throw an error with the raw response message
+      throw new Error(rawResponse || "Registration failed");
     }
+
+    // Try parsing the response as JSON
+    const data = JSON.parse(rawResponse);
+
+    if (!data) {
+      throw new Error("No data received from registration");
+    }
+    
     return data;
-  }catch (error) {
-    throw new Error("Registration failed. Please try again.");
+  } catch (error: any) {
+    throw new Error(error.message || "Registration failed. Please try again.");
   }
 }
+
+
