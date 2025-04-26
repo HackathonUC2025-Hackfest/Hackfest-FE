@@ -17,22 +17,6 @@ const BackIcon = () => (
   <Text style={{ fontSize: 24, color: '#8B2323' }}>←</Text>
 );
 
-const HomeIcon = () => (
-  <Text style={{ fontSize: 24, color: '#888' }}>🏠</Text>
-);
-
-const MapIcon = () => (
-  <Text style={{ fontSize: 24, color: '#888' }}>🗺️</Text>
-);
-
-const BookIcon = () => (
-  <Text style={{ fontSize: 24, color: '#8B2323' }}>📕</Text>
-);
-
-const ProfileIcon = () => (
-  <Text style={{ fontSize: 24, color: '#888' }}>👤</Text>
-);
-
 const SmartHistory = () => {
   const insets = useSafeAreaInsets();
 

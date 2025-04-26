@@ -23,22 +23,23 @@ export default function App() {
   const slides = [
     {
       id: "1",
-      title: "Welcome to Glamify!",
+      title: "Welcome to Nusatrip",
       image: require("../assets/BeachLanding.png"), 
-      subtitle: "Your go-to platform for sustainable fashion!\nDiscover an easy way to switch to an eco-friendly lifestyle while staying stylish.",
+      subtitle: "Your go-to platform for sustainable fashion! Discover an easy way to switch to an eco-friendly lifestyle while staying stylish.",
       showBackButton: false,
     },
     {
       id: "2",
-      title: "Marketplace & RentWear",
+      title: "Indonesia Culture",
       image: require("../assets/GunungLanding.png"), 
-      subtitle: "Buy & sell sustainable and preloved fashion. Rent outfits for any occasion from sustainable brands & other users.",
+      subtitle: "Culture Sync lets travelers find and book local cultural events nearby, offering real-time updates and easy access to authentic experiences.",
       showBackButton: true,
     },
     {
       id: "3",
-      image: require("../assets/MomLanding.png"), 
-      title: "Join Our Community",
+      image: require("../assets/MomLanding.png"),
+      title: "Smart Planner",
+      subtitle: "Smart Trip-AI Planner creates a personalized itinerary using your preferences and real-time data, making travel planning effortless.", 
       showBackButton: true,
     }
   ]

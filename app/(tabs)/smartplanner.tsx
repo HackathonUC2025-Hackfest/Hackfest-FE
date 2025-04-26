@@ -51,7 +51,7 @@ export default function SmartPlanner() {
                 </Text>
               </View>
 
-              <TouchableOpacity style={styles.continueButton} onPress={() => router.push("/smarthistory")}>
+              <TouchableOpacity style={styles.continueButton} onPress={() => router.push("/smartinput")}>
                 <Text style={styles.continueButtonText}>Create New Plan</Text>
               </TouchableOpacity>
             </View>

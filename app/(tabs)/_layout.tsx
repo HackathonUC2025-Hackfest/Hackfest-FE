@@ -18,7 +18,7 @@ const TabLayout = () => {
         }}
       />
    <Tabs.Screen
-          name="smartplanner"
+          name="localconnect" 
           options={{
             headerShown: false,
             tabBarIcon: ({ color, size }) => (
@@ -29,7 +29,7 @@ const TabLayout = () => {
         />
    {/* Smart Planner Tab */}
    <Tabs.Screen
-          name="localconnect"
+          name="smartplanner"
           options={{
             headerShown: false,
             tabBarIcon: ({ color, size }) => (
