@@ -14,8 +14,6 @@ const RootLayout = () => {
       headerTitleAlign: "center",
     }}> 
       <Stack.Screen name="index" options={{title: "index" , headerShown: false}} />
-      <Stack.Screen name="Homepage" options={{ title: "Homepage" , headerShown: false}} />
-      <Stack.Screen name="About" options={{ title: "About"}} />
       <Stack.Screen name="auth/login" options={{ title: "Login"}} />
       <Stack.Screen name="auth/register" options={{ title: "Sing Up"}} />
       <Stack.Screen name="auth/forgotpassword" options={{ title: "Forgot Password"}} />
@@ -31,29 +29,3 @@ const RootLayout = () => {
 }
 
 export default RootLayout
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-        backgroundColor: "#f5f5f5",
-      },
-      title: {
-        fontSize: 24,
-        fontWeight: "bold",
-        color: "#333",
-      },
-      Image: {
-        width: 100,
-        height: 100,
-        marginBottom: 20,
-      },
-      card: { 
-        backgroundColor: "#fff",
-        borderRadius: 10,
-        padding: 20,
-        shadowColor: "#000",
-        marginTop: 20,
-      },
-})
