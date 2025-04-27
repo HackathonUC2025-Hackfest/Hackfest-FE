@@ -21,6 +21,7 @@ Memudahkan pengguna mengeksplorasi destinasi dengan informasi lengkap, lokasi, d
 
 ## Tech Stack
 
+* **Frontend:** React Native, TypeScript
 * **Backend:** Python, Flask
 * **Database:** PostgreSQL
 * **ORM:** SQLAlchemy (Flask-SQLAlchemy)
